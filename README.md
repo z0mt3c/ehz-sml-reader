@@ -1,6 +1,8 @@
 # ehz-sml-reader
 EHZ SML parser/reader to be used with IR opto heads (tested with ehz ISKRA MT681)
 
+[![Build Status](https://travis-ci.org/z0mt3c/ehz-sml-reader.svg?branch=master)](https://travis-ci.org/z0mt3c/ehz-sml-reader)
+
 ## Usage
 
 ```
