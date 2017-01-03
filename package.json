@@ -18,5 +18,14 @@
     "hoek": "^4.1.0",
     "lodash": "^4.17.4",
     "serialport": "^4.0.7"
-  }
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/z0mt3c/ehz-sml-reader.git"
+  },
+  "bugs": {
+    "url": "https://github.com/z0mt3c/ehz-sml-reader/issues"
+  },
+  "homepage": "https://github.com/z0mt3c/ehz-sml-reader#readme"
 }
