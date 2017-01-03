@@ -21,7 +21,8 @@ const defaultOptions = {
     }
   },
   maxChunkSize: 4096,
-  autoStart: true
+  autoStart: true,
+  divisor: 10
 }
 
 class Reader extends EventEmitter {
@@ -49,16 +50,16 @@ class Reader extends EventEmitter {
       this._chunk = ''
     }
 
-    var chunk = this._chunk += data.toString('hex')
+    this._chunk += data.toString('hex')
 
-    if (chunk.match(this.options.pattern.message)) {
+    if (this._chunk.match(this.options.pattern.message)) {
       var message = {}
-      Object.keys(this.options.pattern.params).forEach( (key) => {
+      Object.keys(this.options.pattern.params).forEach((key) => {
         const regex = this.options.pattern.params[key]
-        const match = chunk.match(regex)
+        const match = this._chunk.match(regex)
         if (match) {
           let value = match[match.length - 1]
-          value = parseInt(value, 16) / 10000
+          value = parseInt(value, 16) / this.options.divisor
           message[key] = value
         }
       })
