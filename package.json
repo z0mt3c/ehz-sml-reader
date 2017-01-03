@@ -1,0 +1,22 @@
+{
+  "name": "ehz-sml-reader",
+  "version": "1.0.0",
+  "description": "EHZ SML parser/reader to be used with IR opto heads (tested with ehz ISKRA MT681)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "ehz",
+    "sml",
+    "iskra",
+    "mt681"
+  ],
+  "author": "Timo Behrmann",
+  "license": "MIT",
+  "dependencies": {
+    "hoek": "^4.1.0",
+    "lodash": "^4.17.4",
+    "serialport": "^4.0.7"
+  }
+}
