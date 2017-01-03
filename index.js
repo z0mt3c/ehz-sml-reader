@@ -1,7 +1,6 @@
 const EventEmitter = require('events')
 const SerialPort = require('serialport')
 const Hoek = require('hoek')
-const _ = require('lodash')
 
 const defaultOptions = {
   port: '/dev/ttyUSB0',
@@ -54,10 +53,11 @@ class Reader extends EventEmitter {
 
     if (chunk.match(this.options.pattern.message)) {
       var message = {}
-      _.each(this.options.pattern.params, function (regex, key) {
-        var match = chunk.match(regex)
+      Object.keys(this.options.pattern.params).forEach( (key) => {
+        const regex = this.options.pattern.params[key]
+        const match = chunk.match(regex)
         if (match) {
-          var value = _.last(match)
+          let value = match[match.length - 1]
           value = parseInt(value, 16) / 10000
           message[key] = value
         }
