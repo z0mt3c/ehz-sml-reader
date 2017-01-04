@@ -22,7 +22,7 @@ const defaultOptions = {
   },
   maxChunkSize: 4096,
   autoStart: true,
-  divisor: 10
+  divisor: 10000
 }
 
 class Reader extends EventEmitter {
