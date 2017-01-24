@@ -1,6 +1,6 @@
 {
   "name": "ehz-sml-reader",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "EHZ SML parser/reader to be used with IR opto heads (tested with ehz ISKRA MT681)",
   "main": "index.js",
   "scripts": {
