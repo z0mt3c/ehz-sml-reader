@@ -9,8 +9,7 @@ const defaultOptions = {
     databits: 8,
     stopbits: 1,
     parity: 'none',
-    buffersize: 2048,
-    parser: SerialPort.parsers.readline('1b1b1b1b01010101', 'hex')
+    buffersize: 2048
   },
   pattern: {
     params: {
@@ -28,6 +27,11 @@ class Reader extends EventEmitter {
   constructor (options) {
     super()
     this.options = Hoek.applyToDefaults(defaultOptions, options || {})
+
+    if (!this.options.portOptions.parser) {
+      this.options.portOptions.parser = SerialPort.parsers.readline('1b1b1b1b01010101', 'hex')
+    }
+
     if (this.options.autoStart) this.start()
   }
 
@@ -43,6 +47,7 @@ class Reader extends EventEmitter {
   }
 
   _onData (data) {
+    if (data.indexOf('760') !== 0) return
     var message = {}
     var hasKey = false
     Object.keys(this.options.pattern.params).forEach((key) => {
