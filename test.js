@@ -16,7 +16,7 @@ describe('Reader', () => {
         assert.equal(msg.total, 197.4638, 'Total should be given')
         assert.equal(msg.t1, 197.4638, 't1 should be given')
         assert.equal(msg.t2, 0, 't2 should be given')
-        assert.equal(msg.ap, 218, 'ap should be given')
+        assert.equal(msg.w1, 218, 'w1 should be given')
         done()
       })
 

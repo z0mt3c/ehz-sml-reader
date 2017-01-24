@@ -12,10 +12,10 @@ const defaultOptions = {
     buffersize: 2048
   },
   pattern: {
-    total: { prefix: '070100010800', skip: 24, parse: 16, divisor: 10000 },
-    t1: { prefix: '070100010801', skip: 24, parse: 8, divisor: 10000 },
-    t2: { prefix: '070100010802', skip: 24, parse: 8, divisor: 10000 },
-    ap: { prefix: '070100100700', skip: 16, parse: 8, divisor: 1 }
+    total: { regex: new RegExp('070100010800.{24}(.{16})0177'), divisor: 10000 },
+    t1: { regex: new RegExp('070100010801.{24}(.{8})0177'), divisor: 10000 },
+    t2: { regex: new RegExp('070100010802.{24}(.{8})0177'), divisor: 10000 },
+    w1: { regex: new RegExp('070100100700.{16}(.{8})0177'), divisor: 1 }
   },
   autoStart: true
 }
@@ -49,18 +49,18 @@ class Reader extends EventEmitter {
     var hasKey = false
     Object.keys(this.options.pattern).forEach((key) => {
       const pattern = this.options.pattern[key]
-      if (pattern.prefix) {
-        const match = data.indexOf(pattern.prefix)
-        if (match !== -1) {
-          let value = data.substr(match + pattern.prefix.length + pattern.skip, pattern.parse)
+      if (pattern.regex) {
+        const match = data.match(pattern.regex)
+        if (match) {
+          let value = match[match.length - 1]
           value = parseInt(value, 16) / pattern.divisor
           message[key] = value
           hasKey = true
         }
-      } else if (pattern.regex) {
-        const match = data.match(pattern.regex)
-        if (match) {
-          let value = match[match.length - 1]
+      } else if (pattern.prefix) {
+        const match = data.indexOf(pattern.prefix)
+        if (match !== -1) {
+          let value = data.substr(match + pattern.prefix.length + pattern.skip, pattern.parse)
           value = parseInt(value, 16) / pattern.divisor
           message[key] = value
           hasKey = true
