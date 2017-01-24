@@ -10,7 +10,7 @@ const defaultOptions = {
     stopbits: 1,
     parity: 'none',
     buffersize: 2048,
-    parser: SerialPort.parsers.raw
+    parser: SerialPort.parsers.readline('1b1b1b1b01010101', 'hex')
   },
   pattern: {
     message: new RegExp('1b1b1b1b01010101.*1b1b1b1b.{8}'),
@@ -44,19 +44,11 @@ class Reader extends EventEmitter {
   }
 
   _onData (data) {
-    // Avoid leaks
-    if (this._chunk.length > this.options.maxChunkSize) {
-      console.warn('Chunk length too large - reset')
-      this._chunk = ''
-    }
-
-    this._chunk += data.toString('hex')
-
-    if (this._chunk.match(this.options.pattern.message)) {
+    if (data.match(this.options.pattern.message)) {
       var message = {}
       Object.keys(this.options.pattern.params).forEach((key) => {
         const regex = this.options.pattern.params[key]
-        const match = this._chunk.match(regex)
+        const match = data.match(regex)
         if (match) {
           let value = match[match.length - 1]
           value = parseInt(value, 16) / this.options.divisor
@@ -66,7 +58,6 @@ class Reader extends EventEmitter {
 
       this._lastMessage = message
       this.emit('data', message)
-      this._chunk = ''
     } else {
       // message incomplete
     }
