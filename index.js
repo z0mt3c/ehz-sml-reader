@@ -13,7 +13,6 @@ const defaultOptions = {
     parser: SerialPort.parsers.readline('1b1b1b1b01010101', 'hex')
   },
   pattern: {
-    message: new RegExp('1b1b1b1b01010101.*1b1b1b1b.{8}'),
     params: {
       total: new RegExp('070100010800.{24}(.{16})0177'),
       t1: new RegExp('070100010801.{24}(.{8})0177'),
@@ -44,22 +43,22 @@ class Reader extends EventEmitter {
   }
 
   _onData (data) {
-    if (data.match(this.options.pattern.message)) {
-      var message = {}
-      Object.keys(this.options.pattern.params).forEach((key) => {
-        const regex = this.options.pattern.params[key]
-        const match = data.match(regex)
-        if (match) {
-          let value = match[match.length - 1]
-          value = parseInt(value, 16) / this.options.divisor
-          message[key] = value
-        }
-      })
+    var message = {}
+    var hasKey = false
+    Object.keys(this.options.pattern.params).forEach((key) => {
+      const regex = this.options.pattern.params[key]
+      const match = data.match(regex)
+      if (match) {
+        let value = match[match.length - 1]
+        value = parseInt(value, 16) / this.options.divisor
+        message[key] = value
+        hasKey = true
+      }
+    })
 
+    if (hasKey) {
       this._lastMessage = message
       this.emit('data', message)
-    } else {
-      // message incomplete
     }
   }
 
