@@ -16,11 +16,10 @@
   "license": "MIT",
   "dependencies": {
     "hoek": "^4.1.0",
-    "serialport": "^4.0.7"
+    "serialport": "^5.0.0-beta3"
   },
   "devDependencies": {
-    "mocha": "^3.2.0",
-    "proxyquire": "^1.7.10"
+    "mocha": "^3.2.0"
   },
   "repository": {
     "type": "git",
