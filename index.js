@@ -1,5 +1,6 @@
 const EventEmitter = require('events')
 const SerialPort = require('serialport')
+const Readline = SerialPort.parsers.Readline
 const Hoek = require('hoek')
 
 const defaultOptions = {
@@ -8,8 +9,7 @@ const defaultOptions = {
     baudrate: 9600,
     databits: 8,
     stopbits: 1,
-    parity: 'none',
-    buffersize: 2048
+    parity: 'none'
   },
   pattern: {
     total: { regex: new RegExp('070100010800.{24}(.{16})0177'), divisor: 10000 },
@@ -24,19 +24,19 @@ class Reader extends EventEmitter {
   constructor (options) {
     super()
     this.options = Hoek.applyToDefaults(defaultOptions, options || {})
-
-    if (!this.options.portOptions.parser) {
-      this.options.portOptions.parser = SerialPort.parsers.readline('1b1b1b1b01010101', 'hex')
-    }
-
     if (this.options.autoStart) this.start()
   }
 
   start () {
     this._chunk = ''
     this._port = new SerialPort(this.options.port, this.options.portOptions)
-    this._port.on('data', this._onData.bind(this))
+    this._parser = this._port.pipe(new Readline({delimiter:'1b1b1b1b01010101', encoding: 'hex' }))
+    this._parser.on('data', this._onData.bind(this))
     this._port.on('error', this._onError.bind(this))
+    this._port.on('open', () => {
+      console.log("Connection established")
+      this.emit('open')
+    })
   }
 
   stop () {
@@ -45,8 +45,8 @@ class Reader extends EventEmitter {
 
   _onData (data) {
     if (data.indexOf('760') !== 0) return
-    var message = {}
-    var hasKey = false
+    let message = {}
+    let hasKey = false
     Object.keys(this.options.pattern).forEach((key) => {
       const pattern = this.options.pattern[key]
       if (pattern.regex) {
